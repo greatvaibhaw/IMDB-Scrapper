@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <title> IMDB Search</title>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <script type="text/javascript">
+            const url = "http://localhost:3000/"
+
+            function getTopM(){
+                let m = parseInt(document.getElementById('movieCount').value);
+                let serveUrl = url+"getTopMovies?m="+m;
+                let request = new XMLHttpRequest();
+                request.open('GET',serveUrl);
+                request.send();
+                request.onload = function(){
+                    let response = JSON.parse(request.response);
+                    console.log(response);
+                    document.getElementById('render').innerHTML = "<div><strong> Movie </strong><p>";
+                    for(let ob in response.data){
+                        document.getElementById('render').innerHTML += "<p>"+response.data[ob]+"</p>";
+                    }
+                    document.getElementById('render').innerHTML += "</div>"
+                }
+                console.log()
+                return false;
+            }
+
+            function getTopMovies(){
+                document.getElementById('render').innerHTML =  "Number of Movies : <input type= 'textfield' id='movieCount'/> &nbsp;&nbsp;&nbsp;<input type = 'button' onclick = 'return getTopM()' value = 'Submit'>";
+                return false;
+            }
+            function getTopMMovies() {
+                document.getElementById('render').innerHTML =  "Actor Name: <input type= 'textfield' id='actorName'/> &nbsp;&nbsp; Number of Movies : <input type= 'textfield' id='movieCount'/> &nbsp;&nbsp;&nbsp;<input type = 'button' onclick = 'return getTopMMoviesofActor()' value = 'Submit'>";
+                return false;
+            }
+
+            function getTopMMoviesofActor() {
+                let name = document.getElementById('actorName').value;
+                let m = parseInt(document.getElementById('movieCount').value);
+                let serveUrl = url+"getActorTopMovies?actor="+name+"&m="+m;
+                let request = new XMLHttpRequest();
+                request.open('GET',serveUrl);
+                request.send();
+                request.onload = function(){
+                    let response = JSON.parse(request.response);
+                    console.log(response);
+                    document.getElementById('render').innerHTML = "<div>The top "+response.data.length+" movies of <strong>"+name+"</strong></div><p/>";
+                    let i=1;
+                    for(let ob in response.data){
+                        document.getElementById('render').innerHTML += "<p>"+ i++ +". "+response.data[ob]+"</p>";
+                    }
+                    document.getElementById('render').innerHTML += "</div>"
+                }
+                return false;
+            }
+        </script>
+    </head>
+    <body>
+        <div class ="container-fluid">
+            <p><span class = "text-center"><h2>Welcome to the IMDB Search !</h2></span></p>
+            <div id ="render">
+                <a href onclick="return getTopMovies()">Click to Search Top M Movies</a><p/>
+                <a href onclick="return getTopMMovies()">Click to Search Top M Movies of an Actor</a>
+            </div>
+        </div>
+    </body>
+</html>
